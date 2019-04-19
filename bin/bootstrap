@@ -29,19 +29,27 @@ if [ ! -f "${ACTION_FILE_PATH}" ]; then
   echo "Warn: ${ACTION_FILE_PATH} does not exist. Please consider provide system env: \$ACTION_FILE" 1>&2
 fi
 
-if [[ ! -z "${DEBUG}" ]]; then
-  echo ""
-  echo "ACTION FILE CONTENT:"
-  echo ""
-  cat "${ACTION_FILE_PATH}"
-
-  echo ""
-  echo "ACTION FILE CONTENT:"
-  echo ""
-  cat "${ACTION_FILE_PATH}"
-fi
-
-CMD_OPTIONS="--config \"\${CONFIG_FILE_PATH}\""
+CMD_OPTIONS="--config ${CONFIG_FILE_PATH}"
 [[ ! -z "${DRY_RUN}" ]] && CMD_OPTIONS="${CMD_OPTIONS} --dry-run"
 
-curator ${CMD_OPTIONS} "${ACTION_FILE_PATH}"
+CMD="curator ${CMD_OPTIONS} ${ACTION_FILE_PATH}"
+
+if [[ ! -z "${DEBUG}" ]]; then
+  echo ""
+  echo "ACTION FILE: \"${ACTION_FILE_PATH}\""
+  echo "Action FILE CONTENT:"
+  cat "${ACTION_FILE_PATH}"
+
+  echo ""
+  echo "CONFIG FILE: \"${CONFIG_FILE_PATH}\""
+  echo "CONFIG FILE CONTENT:"
+  echo ""
+  cat "${CONFIG_FILE_PATH}"
+
+  echo ""
+  echo "COMMAND:"
+  echo ""
+  echo "${CMD}"
+fi
+
+${CMD}
