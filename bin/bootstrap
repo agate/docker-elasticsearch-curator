@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+CURATOR_HOME=${CURATOR_HOME:-$HOME/.curator}
+CONFIG_FILE_PATH=${CONFIG_FILE_PATH:-$CURATOR_HOME/config.yml}
+ACTION_FILE_PATH=${ACTION_FILE_PATH:-$CURATOR_HOME/action.yml}
+
+mkdir -p "${CURATOR_HOME}"
+
+if [ "${CONFIG_FILE}" ]; then
+  if [[ "${CONFIG_FILE}" == http* ]]; then
+    curl "${CONFIG_FILE}" > $CONFIG_FILE_PATH
+  else
+    echo -e "${CONFIG_FILE}" > $CONFIG_FILE_PATH
+  fi
+fi
+
+if [ "${ACTION_FILE}" ]; then
+  if [[ "${ACTION_FILE}" == http* ]]; then
+    curl "${ACTION_FILE}" > $ACTION_FILE_PATH
+  else
+    echo -e "${ACTION_FILE}" > $ACTION_FILE_PATH
+  fi
+fi
+
+if [ ! -f "${CONFIG_FILE_PATH}" ]; then
+  echo "Warn: ${CONFIG_FILE_PATH} does not exist. Please consider provide system env: \$CONFIG_FILE" 1>&2
+fi
+if [ ! -f "${ACTION_FILE_PATH}" ]; then
+  echo "Warn: ${ACTION_FILE_PATH} does not exist. Please consider provide system env: \$ACTION_FILE" 1>&2
+fi
+
+curator --config "${CONFIG_FILE_PATH}" "${ACTION_FILE_PATH}"
